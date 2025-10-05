@@ -128,7 +128,7 @@ TURBOPUFFER_API_KEY=your_key
 
 ## 👥 Team
 
-- **Project Lead:** [Your Name]
+- **Project Lead:** Christopher Arce
 - **Contributors:** [Add team members]
 
 ## 📄 License
@@ -144,5 +144,6 @@ TURBOPUFFER_API_KEY=your_key
 
 ## 📞 Support
 
+- **Email:** chris@digitalalpha.ai
 - **Issues:** [GitHub Issues](https://github.com/DAAIDev/packetfabric-ai/issues)
 - **Docs:** See `docs/` folder
