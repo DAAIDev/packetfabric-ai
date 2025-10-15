@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   postgres:
-    image: postgres:14-alpine
+    image: ankane/pgvector:v0.5.1
     container_name: packetfabric_db
     environment:
       POSTGRES_DB: packetfabric_ai
@@ -40,10 +40,51 @@ services:
       - packetfabric_network
     restart: unless-stopped
 
+  n8n:
+    image: n8nio/n8n:latest
+    container_name: packetfabric_n8n
+    restart: unless-stopped
+    ports:
+      - "5678:5678"
+    environment:
+      N8N_BASIC_AUTH_ACTIVE: "true"
+      N8N_BASIC_AUTH_USER: admin
+      N8N_BASIC_AUTH_PASSWORD: changeme123
+      DB_TYPE: postgresdb
+      DB_POSTGRESDB_HOST: postgres
+      DB_POSTGRESDB_PORT: 5432
+      DB_POSTGRESDB_DATABASE: packetfabric_ai
+      DB_POSTGRESDB_USER: packetfabric_admin
+      DB_POSTGRESDB_PASSWORD: change_me_in_production
+      N8N_HOST: localhost
+      N8N_PORT: 5678
+      N8N_PROTOCOL: http
+      WEBHOOK_URL: http://localhost:5678/
+      EXECUTIONS_DATA_SAVE_ON_ERROR: all
+      EXECUTIONS_DATA_SAVE_ON_SUCCESS: all
+      EXECUTIONS_DATA_SAVE_MANUAL_EXECUTIONS: "true"
+      GENERIC_TIMEZONE: America/New_York
+      NODE_FUNCTION_ALLOW_BUILTIN: "*"
+      NODE_FUNCTION_ALLOW_EXTERNAL: "*"
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+      VOYAGE_API_KEY: ${VOYAGE_API_KEY:-}
+      TURBOPUFFER_API_KEY: ${TURBOPUFFER_API_KEY:-}
+    volumes:
+      - n8n_data:/home/node/.n8n
+      - ./scripts:/scripts
+      - /Users/cwebmac/Downloads/modok-main:/data/docs
+    networks:
+      - packetfabric_network
+    depends_on:
+      postgres:
+        condition: service_healthy
+
 volumes:
   postgres_data:
     driver: local
   pgadmin_data:
+    driver: local
+  n8n_data:
     driver: local
 
 networks:
